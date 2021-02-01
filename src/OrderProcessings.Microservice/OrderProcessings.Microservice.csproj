@@ -8,4 +8,10 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="masstransit" Version="7.1.4" />
+    <PackageReference Include="masstransit.aspnetcore" Version="7.1.4" />
+    <PackageReference Include="masstransit.rabbitmq" Version="7.1.4" />
+  </ItemGroup>
+
 </Project>

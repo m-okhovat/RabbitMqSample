@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Ticketings.Microservice.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class TicketController : ControllerBase
     {
         private readonly IBus _bus;
