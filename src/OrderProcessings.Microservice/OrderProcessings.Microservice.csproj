@@ -14,4 +14,8 @@
     <PackageReference Include="masstransit.rabbitmq" Version="7.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
 </Project>

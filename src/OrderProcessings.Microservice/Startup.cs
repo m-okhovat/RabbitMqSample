@@ -1,14 +1,11 @@
+using GreenPipes;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OrderProcessings.Microservice
 {
@@ -24,7 +21,26 @@ namespace OrderProcessings.Microservice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMassTransit(config =>
+            {
+                config.AddConsumer<TicketConsumer>();
+                config.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                {
+                    cfg.UseHealthCheck(provider);
+                    cfg.Host(new Uri("rabbitmq://localhost"), h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+                    cfg.ReceiveEndpoint("ticketQueue", ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<TicketConsumer>(provider);
+                    });
+                }));
+            });
+            services.AddMassTransitHostedService();
             services.AddControllers();
         }
 
